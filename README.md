@@ -1,9 +1,8 @@
-1. Variable 
-- We define a boolean variable $x_{i,j}$ to represent the statement $Assign(i, j)$.  
-* If $x_{i,j}$ evaluates to $True$, invigilator $i$ is assigned to shift $j$.
-* If $x_{i,j}$ evaluates to $False$, invigilator $i$ is not assigned to shift $j$.
+1. Variable: We define a boolean variable x_{i,j} to represent the statement Assign(i, j).  
+    * If x_{i,j} evaluates to $True$, invigilator i is assigned to shift j.
+    * If x_{i,j} evaluates to $False$, invigilator i is not assigned to shift j.
 2. Availability
-* Logic: If invigilator $i$ is busy during shift $j$, they cannot be assigned to that shift.  
+* Logic: If invigilator i is busy during shift j, they cannot be assigned to that shift.  
 * First-order formula: $\forall i\forall j: Busy(i, j) \rightarrow \neg Assign(i, j)$.  
 * CNF Translation: Whenever $Busy(i, j)$ is true, we force that $x_{i,j}$ must be false. This forms a unit clause:
 $$(\neg x_{i,j})$$
