@@ -13,8 +13,14 @@ $$(\neg x_{i,j})$$
 * CNF Translation: This rule dictates that invigilator $i$ cannot be assigned to both shift $j$ and shift $k$ simultaneously. For every pair of overlapping shifts $j$ and $k$, and for every invigilator $i$, we generate a clause containing two negative literals:
 $$(\neg x_{i,j} \vee \neg x_{i,k})$$
 4. Capacity
-Logic: Each shift requires exactly $k$ invigilators. In propositional logic, "exactly $k$" cannot be written as a single simple clause. It is decomposed into two separate bounds: "at most $k$" and "at least $k$". Let $n$ be the total number of available invigilators.  
-*At-most-$k$ bound: We must prevent any group of $k+1$ invigilators from being assigned to the same shift. For every possible combination of $k+1$ invigilators out of the total pool $n$, at least one person in that specific group must not be assigned. This generates clauses consisting entirely of negative literals:
-$$\bigvee_{m=1}^{k+1} \neg x_{i_m, j}$$
-*At-least-$k$ bound: We must ensure that enough people are assigned. If we evaluate any group of $n - k + 1$ invigilators, it is logically impossible for all of them to be unassigned (otherwise, the remaining available pool would be strictly smaller than $k$). Therefore, in every combination of $n - k + 1$ invigilators, at least one person must be assigned. This generates clauses consisting entirely of positive literals:
-$$\bigvee_{m=1}^{n-k+1} x_{i_m, j}$$
+* Logic: A shift $j$ needs *exactly* $k$ invigilators out of the total $n$ available staff[cite: 1]. Because CNF format only understands basic AND/OR logic, we cannot write "exactly $k$" directly. Instead, we must break it down into two simpler rules: **"Maximum $k$"** and **"Minimum $k$"**[cite: 2].
+
+* Rule 1: At-most-$k$ 
+  If a shift only needs $k$ people, we cannot allow $k+1$ people to work. This means if we randomly pick *any group of $k+1$ people*, at least one person in that group **must be rejected**.
+  *CNF Formula:* For every possible combination of $k+1$ invigilators, we write a clause where everyone has a NOT ($\neg$) sign (meaning at least one person is not assigned):
+  $$\bigvee_{m=1}^{k+1} \neg x_{i_m, j}$$
+
+* Rule 2: At-least-$k$ 
+  If we need $k$ people, we cannot have too many people taking the day off. Specifically, if we look at a large group of $n - k + 1$ people, it is mathematically impossible for all of them to be absent. At least one person from this large group **must be assigned** to work.
+  *CNF Formula:* For every possible combination of $n - k + 1$ invigilators, we write a clause with positive signs (meaning at least one person is assigned):
+  $$\bigvee_{m=1}^{n-k+1} x_{i_m, j}$$
