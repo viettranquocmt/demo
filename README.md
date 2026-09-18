@@ -1,27 +1,7 @@
-1. Variable: We define a boolean variable $x_{i,j}$ to represent the statement $Assign(i, j)$.  
-* If $x_{i,j}$ evaluates to $True$, invigilator $i$ is assigned to shift $j$.
-* If $x_{i,j}$ evaluates to $False$, invigilator $i$ is not assigned to shift $j$.
+### Decision: Using PySAT over Z3 for Pure CNF Encoding
 
-2. Availability
-* Logic: If invigilator $i$ is busy during shift $j$, they cannot be assigned to that shift.  
-* First-order formula: $\forall i\forall j: Busy(i, j) \rightarrow \neg Assign(i, j)$.  
-* CNF Translation: Whenever $Busy(i, j)$ is true, we force that $x_{i,j}$ must be false. This forms a unit clause:
-$$(\neg x_{i,j})$$
+For Module 1.2, we decided to build our SAT solver using the `python-sat` (PySAT) library instead of Z3. The main reason comes down to how we handle capacity constraints, such as requiring "at-least-$k$" invigilators per shift.
 
-3. Overlap
-* Logic: An invigilator cannot be assigned to two different shifts that overlap in time.  
-* First-order formula: $\forall i\forall j\forall k: Overlap(j, k) \wedge Assign(i, j) \rightarrow \neg Assign(i, k)$.  
-* CNF Translation: This rule dictates that invigilator $i$ cannot be assigned to both shift $j$ and shift $k$ simultaneously. For every pair of overlapping shifts $j$ and $k$, and for every invigilator $i$, we generate a clause containing two negative literals:
-$$(\neg x_{i,j} \vee \neg x_{i,k})$$
+If we used Z3 and strictly followed the Pure CNF requirement, we would have to generate clauses using a naive combination approach. This leads to a massive combinatorial explosion — generating $O(\binom{n}{n-k+1})$ clauses. When applied to our full dataset of 73 invigilators, this brute-force method quickly becomes computationally intractable and crashes due to memory limits.
 
-4. Capacity
-* Logic: A shift $j$ needs exactly $k$ invigilators out of the total $n$ available staff. Because CNF format only understands basic AND/OR logic, we cannot write "exactly $k$" directly. Instead, we must break it down into two simpler rules: "At-most-k" and "At-least-k".
-* Rule 1: At-most-k 
-  * If a shift only needs $k$ people, we cannot allow $k+1$ people to work. This means if we randomly pick any group of $k+1$ people, at least one person in that group must be rejected.
-  * CNF Formula: For every possible combination of $k+1$ invigilators, we write a clause where everyone has a ($\neg$) sign (meaning at least one person is not assigned):
-  $$\bigvee_{m=1}^{k+1} \neg x_{i_m, j}$$
-
-* Rule 2: At-least-$k$ 
-  * If we need $k$ people, the group of $n - k + 1$ people need at least one person to be assigned.
-  * CNF Formula: For every possible combination of $n - k + 1$ invigilators, we write a clause with positive signs (meaning at least one person is assigned):
-  $$\bigvee_{m=1}^{n-k+1} x_{i_m, j}$$
+To solve this, we switched to PySAT and leveraged its `CardEnc` module (`CardEnc.atleast` and `CardEnc.atmost`). Instead of listing every possible combination, PySAT uses a sequential counter technique. It creates auxiliary variables under the hood to track the count, which drastically shrinks the number of required clauses down to a linear scale ($O(n \cdot k)$). This approach allowed us to perfectly satisfy the strict "Pure CNF only" requirement—without relying on any arithmetic SMT functions—while keeping the solver incredibly fast and scalable on real-world data.
