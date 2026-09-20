@@ -43,7 +43,7 @@ Based on the problem logic, we encode the constraints into Conjunctive Normal Fo
             $$(x_{1,2} \vee x_{2,2} \vee x_{3,2})$$
 
 * SAT Solver Trace (Unit Propagation)
-    * **Step 1 (Availability):** $(\neg x_{1,1}) \Rightarrow \mathbf{x_{1,1} = 0}$.
-    * **Step 2 ($CT_1$ At-least-2):** Substituting $x_{1,1}=0$ into $(x_{1,1} \vee x_{2,1})$ and $(x_{1,1} \vee x_{3,1}) \Rightarrow \mathbf{x_{2,1} = 1}, \mathbf{x_{3,1} = 1}$.
-    * **Step 3 (Overlap):** Substituting $x_{2,1}=1, x_{3,1}=1$ into their respective overlap clauses $\Rightarrow \mathbf{x_{2,2} = 0}, \mathbf{x_{3,2} = 0}$.
-    * **Step 4 ($CT_2$ At-least-1):** Substituting $x_{2,2}=0, x_{3,2}=0$ into $(x_{1,2} \vee x_{2,2} \vee x_{3,2}) \Rightarrow \mathbf{x_{1,2} = 1}$.
+    * Step 1 (Availability): $(\neg x_{1,1}) \Rightarrow \mathbf{x_{1,1} = 0}$.
+    * Step 2 ($CT_1$ At-least-2): Substituting $x_{1,1}=0$ into $(x_{1,1} \vee x_{2,1})$ and $(x_{1,1} \vee x_{3,1}) \Rightarrow \mathbf{x_{2,1} = 1}, \mathbf{x_{3,1} = 1}$.
+    * Step 3 (Overlap): Substituting $x_{2,1}=1, x_{3,1}=1$ into their respective overlap clauses $\Rightarrow \mathbf{x_{2,2} = 0}, \mathbf{x_{3,2} = 0}$.
+    * Step 4 ($CT_2$ At-least-1): Substituting $x_{2,2}=0, x_{3,2}=0$ into $(x_{1,2} \vee x_{2,2} \vee x_{3,2}) \Rightarrow \mathbf{x_{1,2} = 1}$.
