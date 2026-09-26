@@ -1,5 +1,5 @@
-* Decision Variables
-  Let $x_{i,j} \in \{0, 1\}$ be a binary variable where $x_{i,j} = 1$ if invigilator $i$ is assigned to shift $j$, and $0$ otherwise.
+Decision Variables
+Let $x_{i,j} \in \{0, 1\}$ be a binary variable where $x_{i,j} = 1$ if invigilator $i$ is assigned to shift $j$, and $0$ otherwise.
 
 * 1. Capacity Constraint
   * Description: Each shift $j$ must be assigned exactly $k_j$ invigilators.
